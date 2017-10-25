@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.nunu.mapper.dao.TeacherDao">
+    <sql id="teacherColumn">
+      a.id,
+      a.teacher_name
+    </sql>
+
+    <sql id="teacherColumnInner">
+        a.id,
+        a.teacher_name,
+        b.id as student_id,
+        b.student_name,
+        b.teacher_id
+    </sql>
+    <resultMap id="teacherResult" type="cn.nunu.mapper.entity.Teacher">
+        <id property="id" column="id"></id>
+        <result property="teacherName" column="teacher_name"></result>
+        <collection property="studentList" >
+            <id property="id" column="student_id"></id>
+            <result property="studentName" column="student_name"></result>
+            <result property="teacherId" column="teacher_id"></result>
+        </collection>
+    </resultMap>
+
+    <select id="list" resultMap="teacherResult">
+        select
+        <include refid="teacherColumnInner"></include>
+        FROM
+        t_teacher a
+        left JOIN t_student b
+        on b.teacher_id = a.id
+    </select>
+</mapper>
